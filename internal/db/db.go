@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/lars-wenk/macro-markets/internal/config"
 	"github.com/rs/zerolog/log"
-	"github.com/yourorg/macro-markets/internal/config"
 )
 
 func MustConnect(ctx context.Context, cfg config.Config) *pgxpool.Pool {

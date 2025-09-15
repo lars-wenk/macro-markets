@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -13,7 +12,8 @@ import (
 	"github.com/lars-wenk/macro-markets/internal/config"
 	"github.com/lars-wenk/macro-markets/internal/db"
 	"github.com/lars-wenk/macro-markets/internal/health"
-	"github.com/lars-wenk/macro-markets/internal/http"
+	httpapi "github.com/lars-wenk/macro-markets/internal/http"
+
 	"github.com/lars-wenk/macro-markets/internal/logger"
 	"github.com/lars-wenk/macro-markets/internal/queue"
 )
