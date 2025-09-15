@@ -3,7 +3,7 @@ SHELL := /bin/bash
 
 .PHONY: dev run build test lint up down logs
 
-
+ 
 up:
 docker compose up -d db nats
 sleep 2
