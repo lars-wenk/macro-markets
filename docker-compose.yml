@@ -1,0 +1,57 @@
+services:
+  db:
+    image: timescale/timescaledb:latest-pg15
+    environment:
+      - POSTGRES_USER=mm
+      - POSTGRES_PASSWORD=mm_pw
+      - POSTGRES_DB=mmdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mm -d mmdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  nats:
+    image: nats:2
+    command: ["-js"]
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    healthcheck:
+      test: ["CMD", "nats-server", "check", "-s", "nats://localhost:4222"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./cmd/api-gateway
+    environment:
+      - HTTP_ADDR=:8080
+      - PG_HOST=db
+      - PG_PORT=5432
+      - PG_USER=mm
+      - PG_PASSWORD=mm_pw
+      - PG_DATABASE=mmdb
+      - PG_SSLMODE=disable
+      - NATS_URL=nats://nats:4222
+      - JWT_SECRET=dev_secret_change_me
+    depends_on:
+      - db
+      - nats
+    ports:
+      - "8080:8080"
+
+  ingestor_x:
+    build: ./cmd/ingestor-x
+    environment:
+      - NATS_URL=nats://nats:4222
+      - NATS_SUBJECT=ingest.items
+    depends_on:
+      - nats
+
+volumes:
+  dbdata:
